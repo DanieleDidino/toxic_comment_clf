@@ -1,5 +1,10 @@
 # Train models for toxic language classification 
 
+The goal is to build a small model that does a good job at classifing the toxic language.
+It should be able to run on small devices.
+
+This is a work in progress repo!!
+
 ## Multilabel classification
 
 **Multilabel classification** is a type of classification task where each instance can be assigned multiple labels simultaneously.
@@ -24,3 +29,18 @@ Variables:
 - **threat**: binary - true/false
 - **insult**: binary - true/false
 - **identity_hate**: binary - true/false
+
+
+## Model
+
+Since the train set is about 100K samples and the text is relatively short, a GRU is probably better thatn a Tranformer?
+
+
+## Streamlit
+
+Community cloud resources and limits (as of February 2024) are approximately as follows:
+
+- CPU: 0.078 cores minimum, 2 cores maximum
+- Memory: 690MB minimum, 2.7GBs maximum
+- Storage: No minimum, 50GB maximum
+
