@@ -39,6 +39,21 @@ Since the train set is about 100K samples and the text is relatively short, a GR
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++ TO EDIT (START) ++++++++++++++++++++++++++++++++++++++++++++++++++
 
+Architecture:
+- Embedding Layer: it converts input text into dense vectors of fixed size.
+- Convolutional Layer:
+  - Conv1D: it applies convolutional filters to the embedded text to capture local patterns (e.g., n-grams).
+  - Pooling Layer: Reduces the dimensionality of the convolutional output while retaining important features.
+  - (the output from the convolutional layers can be fed into the GRU)
+- GRU Layer: it processes the sequential data to capture long-range dependencies and context. 
+- Dense Layers: it makes the final classification decision.
+
+
+Why CNN+GRU:
+- CNN: Excels at capturing local patterns and spatial hierarchies in text data. It can identify key phrases or n-grams that are important for classification.
+- GRU: Effective at capturing long-range dependencies and sequential information in text, which is crucial for understanding the context and semantics.
+
+
 - Feature Extraction: CNN acts as a feature extractor, detecting local n-gram patterns before passing them to GRU. This helps GRU focus on longer-term dependencies rather than processing raw word embeddings.
 - Efficiency: CNN reduces the sequence length (via pooling), making the GRU process fewer time steps. This speeds up training while retaining important contextual information.
 - Empirical Results: Many studies show that CNN+RNN architectures (CNN first, then GRU) outperform RNN-CNN models in text classification.
@@ -72,6 +87,17 @@ Brief description
 Sum up:
 - The CNN acts as a feature extractor, identifying important local patterns.
 - The GRU then takes those extracted local patterns and processes them sequentially, to understand the context of the text.
+
+
+Hyperparameters:
+- Embedding Dimension: size of the embedding vectors (if not pre-trained: typical range 50-300)
+- Number of Filters: the number of filters in the convolutional layer (typical range: 64-256)
+- Kernel Size: the size of the convolutional kernel. Different kernel sizes capture different n-gram patterns. (typical range: 3-7)
+- GRU Hidden Size: the number of features in the hidden state of the GRU. (typical range: 50-200)
+- Learning Rate (typical range: 0.0001-0.01)
+- Batch Size (typical range: 16-128)
+- Dropout Rate (typical range: 0.2-0.5)
+
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++ TO EDIT (END) ++++++++++++++++++++++++++++++++++++++++++++++++++
 
