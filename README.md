@@ -103,6 +103,10 @@ Hyperparameters:
 
 ## Streamlit
 
+``` bach
+streamlit run app.py
+```
+
 Community cloud resources and limits (as of February 2024) are approximately as follows:
 
 - CPU: 0.078 cores minimum, 2 cores maximum
