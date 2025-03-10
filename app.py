@@ -61,23 +61,16 @@ with sidebar:
     # st.markdown("<br>", unsafe_allow_html=True)
     # st.markdown("<br>", unsafe_allow_html=True)
     
-    st.markdown("### 📞 Contact & Links")
-    st.write("**📧 Email:** daniele.didino@gmail.com")  
-    st.write("**🔗 [LinkedIn](https://www.linkedin.com/feed/)**")
-    st.write("**💻 [GitHub](https://github.com/DanieleDidino)**")
-    st.write("**🌐 [website](https://danieledidino.github.io/)**")
-
-    
-    
     # NOT USED ------------------------------------------------------------------------------------
-    st.markdown("---")  # Add horizontal line
+    # st.markdown("---")  # Add horizontal line
     threshold = st.slider("Set a threshold:", min_value=0.0, max_value=1.0, value=0.5, step=0.1)
     st.write(f"Current threshold: {threshold}")  # Display selected value
     # probabilities = values_to_plot(probabilities, threshold)
     # NOT USED ------------------------------------------------------------------------------------
 
     # Category description
-    st.markdown("---")  # Add horizontal line
+    # st.markdown("---")  # Add horizontal line
+    st.markdown("<hr style='border: 2px solid #FFBF00;'>", unsafe_allow_html=True) # Add horizontal line
     with st.expander("What do the categories mean?"):
         st.write(
             """
@@ -89,13 +82,19 @@ with sidebar:
             - **Identity Hate**: Hate speech targeting specific identity groups (race, gender, religion, etc.).
             """
         )
+    
+    #st.markdown("---")  # Add horizontal line
+    st.markdown("<hr style='border: 2px solid #FFBF00;'>", unsafe_allow_html=True)
+    st.markdown("### 📞 Contact & Links")
+    st.write("**📧 Email:** daniele.didino@gmail.com")  
+    st.write("**🔗 [LinkedIn](https://www.linkedin.com/feed/)**")
+    st.write("**💻 [GitHub](https://github.com/DanieleDidino)**")
+    st.write("**🌐 [website](https://danieledidino.github.io/)**")
 
 ####################################################################################
 # Right side: text to classify & gauges
 
 probabilities = predict()
-
-
 
 # Text to evaluate
 with st.container():
@@ -103,7 +102,7 @@ with st.container():
 
 pred = "NOT TOXIC"
 prob = probabilities[0]
-st.info(f"The textr has been classified as **{pred}** \n\n Probability: **{prob:.0f}%**")
+st.info(f"The text has been classified as **{pred}** \n\n Probability: **{prob:.0f}%**")
 
 # Figure description
 st.markdown("### Classification Probabilities 📊")
@@ -130,18 +129,21 @@ for i, category in enumerate(CATEGORIES):
     # Create Gauge plot
     fig.add_trace(go.Indicator(
         mode="gauge+number",
-        # value=probabilities[i],
-        value=st.session_state.probabilities[i],
-        title={'text': category},
-        gauge={'axis': {'range': [0, 100]}},
-        domain={'x': [x_start, x_end], 'y': [y_start, y_end]}
+        value=probabilities[i],
+        title={"text": category},
+        gauge={
+            "axis": {"range": [0, 100]},
+            "bar": {"color": "green" if probabilities[i] > 50 else "red"},
+        },
+        number={"font": {"color": "green" if probabilities[i] > 50 else "red"}},
+        domain={"x": [x_start, x_end], "y": [y_start, y_end]}
     ))
 
 # Set figure size
 fig.update_layout(
     height=800,
     width=1000,
-    paper_bgcolor="steelblue"
+    #paper_bgcolor="steelblue"
 )
 
 with st.container():
