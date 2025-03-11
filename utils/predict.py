@@ -1,23 +1,24 @@
 import numpy as np
+from utils.tokenizer import tokenizer
 
 
-def predict(text: str="Text to classify") -> list[float]:
-    # ADD HERE MODEL
-    probabilities = np.array([0.49, 0.30, 0.50, 0.60, 0.80, 0.99])
-    probabilities *= 100 # convert to percentagepass
-    return probabilities
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
 
 
-def values_to_plot(probabilities: np.array, threshold: float = 0.5) -> np.array:
-    """
-    If the probability of "toxic" is below the threshold, set the probabilites
-    of all the other label to 0
-    """
-    if probabilities[0] < threshold:
-        # If toxic is less than threshold, the other categories are "0"
-        new_prob = np.zeros_like(probabilities)
-        new_prob[0] = probabilities[0]
+def predict_onnx(text, vocab, session):
+    MAX_LEN = 150 # expected input length
+    input = tokenizer(text, vocab, max_len=MAX_LEN)
+    # Get ONNX model predictions
+    output = session.run(None, {"input": input})[0]
+    output = sigmoid(output)
+    return output[0]
+
+
+def prediction_toxic(probability_toxic, threshold):
+    threshold *= 100  # convert to percentage
+    if probability_toxic > threshold:
+        pred = "TOXIC"
     else:
-        new_prob = probabilities
-    new_prob *= 100 # convert to percentage
-    return new_prob
+        pred = "NOT TOXIC"
+    return pred
