@@ -1,13 +1,16 @@
 import streamlit as st
 import plotly.graph_objects as go
-import numpy as np
-from utils.predict import predict
+import json
+# import numpy as np
+import onnxruntime as ort
+from utils.predict import predict_onnx, prediction_toxic
 
 ####################################################################################
-# Config
+# Variables
 
 CATEGORIES = ["Toxic", "Severe Toxic", "Obscene", "Threat", "Insult", "Identity Hate"]
-
+ONNX_MODEL_PATH = "model/model.onnx"
+VOCAB_PATH = "model/vocab_onnx.json"
 
 ####################################################################################
 # Config streamlit
@@ -47,6 +50,14 @@ with open(".streamlit/custom.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
+if "onnx_session" not in st.session_state:
+    # Load the ONNX model
+    st.session_state.onnx_session = ort.InferenceSession(ONNX_MODEL_PATH)
+
+if "vocab" not in st.session_state:
+    # Load vocab
+    st.session_state.vocab = json.load(open(VOCAB_PATH))
+
 ####################################################################################
 # Left column (first part)
 
@@ -61,12 +72,9 @@ with sidebar:
     # st.markdown("<br>", unsafe_allow_html=True)
     # st.markdown("<br>", unsafe_allow_html=True)
     
-    # NOT USED ------------------------------------------------------------------------------------
     # st.markdown("---")  # Add horizontal line
     threshold = st.slider("Set a threshold:", min_value=0.0, max_value=1.0, value=0.5, step=0.1)
-    st.write(f"Current threshold: {threshold}")  # Display selected value
-    # probabilities = values_to_plot(probabilities, threshold)
-    # NOT USED ------------------------------------------------------------------------------------
+    st.write(f"Current threshold: {threshold}")
 
     # Category description
     # st.markdown("---")  # Add horizontal line
@@ -94,15 +102,18 @@ with sidebar:
 ####################################################################################
 # Right side: text to classify & gauges
 
-probabilities = predict()
-
 # Text to evaluate
 with st.container():
     text_input = st.text_area("Enter some text for classification:", "This is a sample input.", height=150)
 
-pred = "NOT TOXIC"
-prob = probabilities[0]
-st.info(f"The text has been classified as **{pred}** \n\n Probability: **{prob:.0f}%**")
+probabilities = predict_onnx(
+    text_input,
+    vocab=st.session_state.vocab,
+    session=st.session_state.onnx_session)
+probabilities *= 100 # convert to percentage
+
+pred = prediction_toxic(probabilities[0], threshold)
+st.info(f"The text has been classified as **{pred}** \n\n Probability: **{probabilities[0]:.1f}%**")
 
 # Figure description
 st.markdown("### Classification Probabilities 📊")
@@ -133,9 +144,9 @@ for i, category in enumerate(CATEGORIES):
         title={"text": category},
         gauge={
             "axis": {"range": [0, 100]},
-            "bar": {"color": "green" if probabilities[i] > 50 else "red"},
+            "bar": {"color": "red" if probabilities[i] > 50 else "green"},
         },
-        number={"font": {"color": "green" if probabilities[i] > 50 else "red"}},
+        number={"font": {"color": "red" if probabilities[i] > 50 else "green"}},
         domain={"x": [x_start, x_end], "y": [y_start, y_end]}
     ))
 
