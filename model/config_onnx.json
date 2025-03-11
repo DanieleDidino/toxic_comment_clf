@@ -1,0 +1,1 @@
+{"vocab_size": 184223, "embedding_dim": 50, "hidden_dim": 64, "num_filters": 128, "kernel_size": 3, "dropout": 0.3, "learning_rate": 0.0008, "batch_size": 16, "epochs": 10, "max_len": 150, "num_classes": 6}
