@@ -1,0 +1,1 @@
+{"Label":{"0":"toxic","1":"severe_toxic","2":"obscene","3":"threat","4":"insult","5":"identity_hate"},"ROC AUC":{"0":0.9705,"1":0.986,"2":0.9865,"3":0.9557,"4":0.9777,"5":0.9533}}
