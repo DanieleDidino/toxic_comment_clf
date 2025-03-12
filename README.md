@@ -1,5 +1,7 @@
 # Train models for toxic language classification 
 
+TO EDIT!
+
 The goal is to build a small model that does a good job at classifing the toxic language.
 It should be able to run on small devices.
 
@@ -113,3 +115,7 @@ Community cloud resources and limits (as of February 2024) are approximately as 
 - Memory: 690MB minimum, 2.7GBs maximum
 - Storage: No minimum, 50GB maximum
 
+## Install
+
+The requirements.txt file is set for the streamlit app and cloud. TO run the notebooks (i.e., eda, and rerun and train the models)
+the commented packages must be uncommented

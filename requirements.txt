@@ -1,13 +1,13 @@
-ipykernel==6.29.5
-matplotlib==3.10.0
+# ipykernel==6.29.5
+# matplotlib==3.10.0
 numpy==2.2.3
-onnx==1.17.0
+# onnx==1.17.0
 onnxruntime==1.21.0
-pandas==2.2.3
+# pandas==2.2.3
 plotly==6.0.0
-scikit-learn==1.6.1
-seaborn==0.13.2
+# scikit-learn==1.6.1
+# seaborn==0.13.2
 streamlit==1.42.2
-torch==2.6.0
-wandb==0.19.7
-wordcloud==1.9.4
+# torch==2.6.0
+# wandb==0.19.7
+# wordcloud==1.9.4
