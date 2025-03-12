@@ -1,121 +1,164 @@
-# Train models for toxic language classification 
+<h1 align="center">Toxic Language Classifier</h1>
 
-TO EDIT!
+<p align="center">An Application for Detecting Toxic Language</p>
 
-The goal is to build a small model that does a good job at classifing the toxic language.
-It should be able to run on small devices.
+Thank you for your interest in this project!
 
-This is a work in progress repo!!
+The goal of this project is to develop an application that detects toxic language.
+The objective was to create a lightweight model that performs well in classifying toxic content while requiring minimal computational resources.
 
-## Multilabel classification
+**Table of Contents**:
 
-**Multilabel classification** is a type of classification task where each instance can be assigned multiple labels simultaneously.
-Namely, multilabel classification allows for the possibility that an instance can belong to multiple classes at once.
+- [Objective](#objective)
+    - [What is Multilabel Classification?](#what-is-multilabel-classification)
+    - [Key Concepts:](#key-concepts)
+- [Model Architecture](#model-architecture)
+    - [Architecture Overview](#architecture-overview)
+    - [Why CNN+GRU?](#why-cnngru)
+    - [Key Benefits](#key-benefits)
+    - [Workflow](#workflow)
+    - [Hyperparameters](#hyperparameters)
+- [Streamlit App (cloud)](#streamlit-app-cloud)
+- [Installation](#installation)
+    - [Python Version: 3.10.12](#python-version-31012)
+    - [1. Clone the Repository](#1-clone-the-repository)
+    - [2. Create a Virtual Environment](#2-create-a-virtual-environment)
+    - [3. Activate the Virtual Environment and Install Dependencies](#3-activate-the-virtual-environment-and-install-dependencies)
+    - [4. Run the Streamlit App Locally](#4-run-the-streamlit-app-locally)
+    - [5. Deactivate the Virtual Environment](#5-deactivate-the-virtual-environment)
 
-Key aspect:
-- **Multiple Labels**: Each instance can have more than one label. For example, a toxic comment might be tagged with both "threat" and "identity_hate".
-- **Independent Labels**: The labels are not mutually exclusive, that is an instance can belong to none, one, or several classes.
+## Objective
 
-## Data
+The goal of this project was to build an efficient, lightweight model to classify text into various toxic categories.
+The model performs multilabel classification, meaning it can assign multiple labels to each text based on its content.
 
-The data is from [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge).
-The dataset includes a large number of Wikipedia comments which have been labelled by human raters for toxic behaviour.
+#### What is Multilabel Classification?
 
-Variables:
+Multilabel classification is a task where each input instance (in this case, a text comment) can be assigned multiple labels simultaneously.
+This is in contrast to traditional single-label classification, where each instance belongs to just one class.
 
-- **id**: comment id
-- **comment_text**: comment
-- **toxic**: binary - true/false
-- **severe_toxic**: binary - true/false
-- **obscene**: binary - true/false
-- **threat**: binary - true/false
-- **insult**: binary - true/false
-- **identity_hate**: binary - true/false
+#### Key Concepts:
 
+- **Multiple Labels**: Each comment can have more than one label. For instance, a toxic comment may be tagged with both "threat" and "identity hate."
+- **Independent Labels**: The labels are not mutually exclusive, meaning a comment can belong to any combination of labels, including none at all.
 
-## Model
+The dataset used in this project is from the [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge) on Kaggle.
+It contains a large set of Wikipedia comments that have been manually labeled for various types of toxic behavior.
 
-Since the train set is about 100K samples and the text is relatively short, a GRU is probably better thatn a Tranformer?
+**Dataset Variables**:
+- **id**: Unique identifier for each comment
+- **comment_text**: The text of the comment
+- **toxic**: Binary (True/False) — Whether the comment is toxic
+- **severe_toxic**: Binary (True/False) — Whether the comment is severely toxic
+- **obscene**: Binary (True/False) — Whether the comment is obscene
+- **threat**: Binary (True/False) — Whether the comment contains a threat
+- **insult**: Binary (True/False) — Whether the comment is insulting
+- **identity_hate**: Binary (True/False) — Whether the comment expresses identity hate
 
-**CNN+GRU** model:
+## Model Architecture
 
-++++++++++++++++++++++++++++++++++++++++++++++++++ TO EDIT (START) ++++++++++++++++++++++++++++++++++++++++++++++++++
+Given the relatively small dataset of 100K samples and short text, a CNN+GRU hybrid model was chosen for this task, as it balances performance and efficiency.
 
-Architecture:
-- Embedding Layer: it converts input text into dense vectors of fixed size.
-- Convolutional Layer:
-  - Conv1D: it applies convolutional filters to the embedded text to capture local patterns (e.g., n-grams).
-  - Pooling Layer: Reduces the dimensionality of the convolutional output while retaining important features.
-  - (the output from the convolutional layers can be fed into the GRU)
-- GRU Layer: it processes the sequential data to capture long-range dependencies and context. 
-- Dense Layers: it makes the final classification decision.
+#### Architecture Overview
 
+- **Embedding Layer**: Converts input text into dense vectors of fixed size.
+- **CNN Layer**:
+  - **Conv1D**: Applies convolutional filters to capture local patterns (e.g., n-grams).
+  - **Pooling Layer**: Reduces dimensionality while preserving key features.
+- **GRU Layer**: Captures long-range dependencies and contextual information within the sequential data.
+- **Dropout Layer**: Helps prevent overfitting by randomly setting a fraction of input units to zero during training.
+- **Dense Layers**: Produces the final classification decision.
 
-Why CNN+GRU:
-- CNN: Excels at capturing local patterns and spatial hierarchies in text data. It can identify key phrases or n-grams that are important for classification.
-- GRU: Effective at capturing long-range dependencies and sequential information in text, which is crucial for understanding the context and semantics.
+#### Why CNN+GRU?
 
+- **CNN**: Effective at identifying local patterns (like n-grams) within text. It serves as a feature extractor, focusing on important phrases for classification.
+- **GRU**: Ideal for processing sequential data and understanding long-range dependencies, crucial for capturing context and meaning.
 
-- Feature Extraction: CNN acts as a feature extractor, detecting local n-gram patterns before passing them to GRU. This helps GRU focus on longer-term dependencies rather than processing raw word embeddings.
-- Efficiency: CNN reduces the sequence length (via pooling), making the GRU process fewer time steps. This speeds up training while retaining important contextual information.
-- Empirical Results: Many studies show that CNN+RNN architectures (CNN first, then GRU) outperform RNN-CNN models in text classification.
+#### Key Benefits
 
-The GRU+CNN architecture represents a hybrid approach that aims to leverage the strengths of both GRUs and CNNs
+- **Feature Extraction**: The CNN extracts important local features (n-grams) before passing them to the GRU, which focuses on sequential dependencies.
+- **Efficiency**: Pooling in the CNN reduces the sequence length, enabling the GRU to process fewer time steps, speeding up training.
+- **Empirical Performance**: CNN+GRU architectures often outperform other combinations (e.g., GRU-CNN) in text classification tasks.
 
-GRU-CNN Architecture:
-- CNN layer captures the local features and patterns within the text (i.e., n-grams).
-- GRU layer is effective at capturing sequential dependencies and long-range contextual information.
-- CNN+GRU allows the model to learn both local and global features, improving accuracy.
+#### Workflow
+- CNN Layer extracts local patterns from the text (n-grams).
+- The GRU Layer processes the output from the CNN to capture sequential dependencies and contextual information.
+- A Dropout Layer is applied to reduce overfitting by randomly dropping units during training.
+- The Final Fully Connected Layer makes the classification decision based on the information from the CNN, GRU, and Dropout layers.
 
-Main Layers:
-- Word embedding: represent the text.
-- CNN layer: extract local features.
-- GRU layer: processes the sequence and capture contextual information.
-- Fully connected: classification layer (6 classes).
+#### Hyperparameters
+- **Embedding Dimension**: Size of the word embedding vectors (typical range: 50-300).
+- **Number of Filters**: Number of filters in the CNN (typical range: 64-256).
+- **Kernel Size**: Size of the convolutional kernel, capturing different n-gram patterns (typical range: 3-7).
+- **GRU Hidden Size**: Number of features in the GRU's hidden state (typical range: 50-200).
+- **Learning Rate**: Controls the step size during training (typical range: 0.0001-0.01).
+- **Batch Size**: Number of samples per batch during training (typical range: 16-128).
+- **Dropout Rate**: Prevents overfitting by randomly dropping units during training (typical range: 0.2-0.5).
 
-###################
-Brief description
+The hyperparameter search was conducted using Weights & Biases.
+The search results for the selected CNN+GRU model, as well as for other models that were not chosen, can be found [here](https://wandb.ai/daniele-didino/toxic_comment_clf).
 
-1. CNN Output Processing:
-   - CNN layers extract local features from the word embeddings.
-   - The outputs of the convolutional layers are then max-pooled, which essentially selects the most important features from each filter.
-   - These max-pooled outputs from the different CNN filters (with varying kernel sizes).
+**Selected Hyperparameters**:
+- **Embedding Dimension**: 50
+- **Number of Filters**: 128
+- **Kernel Size**: 3
+- **GRU Hidden Size**: 64
+- **Learning Rate**: 0.0008
+- **Batch Size**: 16
+- **Dropout Rate**: 0.3
 
-2. Combination with GRU:
-   - The output from the CNN layer is sent into the GRU.
-   - This allows the GRU to process the local features that the CNN has extracted, and to capture the sequential dependencies between those local features.
-   - The output of the GRU is then fed into the final fully connected layer. Therefore the information gained from the CNN, is then passed into the GRU, and then the final fully connected layer.
+## Streamlit App (cloud)
 
-Sum up:
-- The CNN acts as a feature extractor, identifying important local patterns.
-- The GRU then takes those extracted local patterns and processes them sequentially, to understand the context of the text.
+The Streamlit App is available here:
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://h79wmnxbmimkvqem9wnwp2.streamlit.app/)
 
-Hyperparameters:
-- Embedding Dimension: size of the embedding vectors (if not pre-trained: typical range 50-300)
-- Number of Filters: the number of filters in the convolutional layer (typical range: 64-256)
-- Kernel Size: the size of the convolutional kernel. Different kernel sizes capture different n-gram patterns. (typical range: 3-7)
-- GRU Hidden Size: the number of features in the hidden state of the GRU. (typical range: 50-200)
-- Learning Rate (typical range: 0.0001-0.01)
-- Batch Size (typical range: 16-128)
-- Dropout Rate (typical range: 0.2-0.5)
+## Installation
 
+#### Python Version: 3.10.12
 
-++++++++++++++++++++++++++++++++++++++++++++++++++ TO EDIT (END) ++++++++++++++++++++++++++++++++++++++++++++++++++
+#### 1. Clone the Repository
 
-## Streamlit
+Clone the repository using either SSH or HTTPS:
 
-``` bach
+- Using SSH:
+```bash
+git clone git@github.com:DanieleDidino/toxic_comment_clf.git
+```
+
+- Using HTTPS:
+```bash
+git clone https://github.com/DanieleDidino/toxic_comment_clf.git
+```
+
+#### 2. Create a Virtual Environment
+
+```bash
+python3 -m venv .venv
+```
+
+#### 3. Activate the Virtual Environment and Install Dependencies
+
+The `requirements.txt` file includes the necessary dependencies for running the Streamlit app and deploying it on the cloud.
+
+To run the notebooks (e.g., EDA, model retraining), you will need to uncomment the necessary packages in `requirements.txt`.
+For example, `torch` is used only for training the models, so it is commented out in the file (it is not required for running the app).
+
+```bash
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+#### 4. Run the Streamlit App Locally
+   
+```bash
 streamlit run app.py
 ```
 
-Community cloud resources and limits (as of February 2024) are approximately as follows:
+#### 5. Deactivate the Virtual Environment
 
-- CPU: 0.078 cores minimum, 2 cores maximum
-- Memory: 690MB minimum, 2.7GBs maximum
-- Storage: No minimum, 50GB maximum
+To stop the app, press `Ctrl + C`, and then deactivate the virtual environment:
 
-## Install
-
-The requirements.txt file is set for the streamlit app and cloud. TO run the notebooks (i.e., eda, and rerun and train the models)
-the commented packages must be uncommented
+```bash
+deactivate
+```
