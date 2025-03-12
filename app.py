@@ -115,7 +115,7 @@ probabilities = predict_onnx(
 probabilities *= 100 # convert to percentage
 
 pred = prediction_toxic(probabilities[0], threshold)
-st.info(f"The text has been classified as **{pred}** \ns\n Probability: **{probabilities[0]:.1f}%**")
+st.info(f"The text has been classified as **{pred}** \n\n Probability: **{probabilities[0]:.1f}%**")
 
 # Figure description
 st.markdown("### Classification Probabilities 📊")
