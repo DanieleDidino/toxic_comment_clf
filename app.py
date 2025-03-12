@@ -30,7 +30,7 @@ st.set_page_config(
     }
 )
 
-st.header("Toxic Comment Classifier")
+# st.header("Toxic Comment Classifier")
 
 # Condense the layout
 padding = 0
@@ -59,26 +59,27 @@ if "vocab" not in st.session_state:
     st.session_state.vocab = json.load(open(VOCAB_PATH))
 
 ####################################################################################
-# Left column (first part)
+# Left column
 
 sidebar = st.sidebar
 
 with sidebar:
 
     # Custom page title and subtitle
-    #st.title("Toxic Comment Classifier")
-    st.subheader("An app for classifying text into toxic categories using a CNN+GRU architecture", divider="orange")
+    st.title("Toxic Comment Classifier")
+    st.subheader("An app for classifying text into toxic categories", divider="orange")
     st.markdown("<br>", unsafe_allow_html=True)
-    # st.markdown("<br>", unsafe_allow_html=True)
-    # st.markdown("<br>", unsafe_allow_html=True)
     
-    # st.markdown("---")  # Add horizontal line
-    threshold = st.slider("Set a threshold:", min_value=0.0, max_value=1.0, value=0.5, step=0.1)
-    st.write(f"Current threshold: {threshold}")
+    help_slider = """
+    This is the threshold used by the model to make a decision.
+    For example, a threshold of 0.5 means that the model classifies a text as 'toxic' only if the predicted probability is above 0.5.
+    """
+
+    threshold = st.slider("Set a threshold:", min_value=0.0, max_value=1.0, value=0.5, step=0.1, help=help_slider)
+    st.write(f"The classification is based on this threshold: **{threshold}**")
 
     # Category description
-    # st.markdown("---")  # Add horizontal line
-    st.markdown("<hr style='border: 2px solid #FFBF00;'>", unsafe_allow_html=True) # Add horizontal line
+    st.markdown("---")  # Add horizontal line
     with st.expander("What do the categories mean?"):
         st.write(
             """
@@ -91,9 +92,10 @@ with sidebar:
             """
         )
     
-    #st.markdown("---")  # Add horizontal line
-    st.markdown("<hr style='border: 2px solid #FFBF00;'>", unsafe_allow_html=True)
-    st.markdown("### 📞 Contact & Links")
+    st.markdown("---")  # Add horizontal line
+    st.markdown("🔗 [View Source Code on GitHub](https://github.com/DanieleDidino/toxic_comment_clf)")
+    st.markdown("<hr style='border: 2px solid #FFBF00;'>", unsafe_allow_html=True) # Add horizontal line
+    st.markdown("### Contact & Links")
     st.write("**📧 Email:** daniele.didino@gmail.com")  
     st.write("**🔗 [LinkedIn](https://www.linkedin.com/feed/)**")
     st.write("**💻 [GitHub](https://github.com/DanieleDidino)**")
@@ -113,7 +115,7 @@ probabilities = predict_onnx(
 probabilities *= 100 # convert to percentage
 
 pred = prediction_toxic(probabilities[0], threshold)
-st.info(f"The text has been classified as **{pred}** \n\n Probability: **{probabilities[0]:.1f}%**")
+st.info(f"The text has been classified as **{pred}** \ns\n Probability: **{probabilities[0]:.1f}%**")
 
 # Figure description
 st.markdown("### Classification Probabilities 📊")
