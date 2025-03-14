@@ -1,8 +1,8 @@
 <h1 align="center">Toxic Language Classifier</h1>
 
-<p align="center">An Application for Detecting Toxic Language</p>
+<p align="center">A lightweight model for Detecting Toxic Language</p>
 
-#### The Streamlit App is available here:
+### The Streamlit App is available here:
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://h79wmnxbmimkvqem9wnwp2.streamlit.app/)
 
 <!-- TABLE OF CONTENTS -->
@@ -12,14 +12,30 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href="#what-is-multilabel-classification">What is Multilabel Classification?</a></li>
         <li><a href="#data">Data</a></li>
       </ul>
     </li>
     <li>
       <a href="#model-architecture">Model Architecture</a>
+      <ul>
+        <li><a href="#architecture-overview">Architecture Overview</a></li>
+        <li><a href="#why-cnngru">Why CNN+GRU?</a></li>
+        <li><a href="#key-benefits">Key Benefits</a></li>
+        <li><a href="#weights--biases">Weights & Biases</a></li>
+        <li><a href="#performance">Performance</a></li>
+        <li><a href="#estimated-memory-usage-in-ram">Estimated Memory Usage in RAM</a></li>
+      </ul>
     </li>
     <li>
       <a href="#installation">Installation</a>
+      <ul>
+        <li><a href="#1-clone-the-repository">1. Clone the Repository</a></li>
+        <li><a href="#2-create-a-virtual-environment">2. Create a Virtual Environment</a></li>
+        <li><a href="#3-activate-the-virtual-environment-and-install-dependencies">3. Activate the Virtual Environment and Install Dependencies</a></li>
+        <li><a href="#4-run-the-streamlit-app-locally">4. Run the Streamlit App Locally</a></li>
+        <li><a href="#5-deactivate-the-virtual-environment">5. Deactivate the Virtual Environment</a></li>
+      </ul>
     </li>
   </ol>
 </details>
@@ -36,7 +52,7 @@ In this project, I aimed to build an efficient, lightweight model capable of acc
 The model performs multilabel classification, meaning it can assign multiple labels to a single text based on its content.
 It is deployed in a Streamlit app, as shown in the screenshot above.
 
-#### What is Multilabel Classification?
+### What is Multilabel Classification?
 
 Multilabel classification is a task where each input instance (in this case, a text comment) can be assigned multiple labels simultaneously.
 This is in contrast to traditional single-label classification, where each instance belongs to just one class.
@@ -64,7 +80,7 @@ It contains a large set of Wikipedia comments that have been manually labeled fo
 
 Given the relatively small dataset of 100K samples and short text, a CNN+GRU hybrid model was chosen for this task, as it balances performance and efficiency.
 
-#### Architecture Overview
+### Architecture Overview
 
 - **Embedding Layer**: Converts input text into dense vectors of fixed size.
 - **CNN Layer**:
@@ -74,18 +90,18 @@ Given the relatively small dataset of 100K samples and short text, a CNN+GRU hyb
 - **Dropout Layer**: Helps prevent overfitting by randomly setting a fraction of input units to zero during training.
 - **Dense Layers**: Produces the final classification decision.
 
-#### Why CNN+GRU?
+### Why CNN+GRU?
 
 - **CNN**: Effective at identifying local patterns (like n-grams) within text. It serves as a feature extractor, focusing on important phrases for classification.
 - **GRU**: Ideal for processing sequential data and understanding long-range dependencies, crucial for capturing context and meaning.
 
-#### Key Benefits
+### Key Benefits
 
 - **Feature Extraction**: The CNN extracts important local features (n-grams) before passing them to the GRU, which focuses on sequential dependencies.
 - **Efficiency**: Pooling in the CNN reduces the sequence length, enabling the GRU to process fewer time steps, speeding up training.
 - **Empirical Performance**: CNN+GRU architectures often outperform other combinations (e.g., GRU-CNN) in text classification tasks.
 
-#### Weights & Biases
+### Weights & Biases
 
 The hyperparameter search was conducted using **Weights & Biases**.
 The search results for the selected CNN+GRU model, as well as for other models that were not chosen, can be found [here](https://wandb.ai/daniele-didino/toxic_comment_clf).
@@ -107,6 +123,33 @@ The search results for the selected CNN+GRU model, as well as for other models t
 - **Learning Rate**: 0.0008
 - **Batch Size**: 16
 - **Dropout Rate**: 0.3
+
+### Performance
+
+Performance is measured using ROC AUC (Receiver Operating Characteristic - Area Under the Curve) on the test set.
+
+**What is ROC AUC?**
+
+ROC AUC is a metric used to evaluate the performance of classification models. It measures the area under the ROC curve, which plots the true positive rate (TPR) against the false positive rate (FPR) at various threshold settings. The ROC AUC score ranges from 0 to 1, where:
+
+- 1 indicates a perfect classifier
+- Closer to 1 means better classification performance
+- 0.5 suggests the model performs no better than random guessing
+
+|         | Overall | toxic  | severe_toxic | obscene | threat | insult | identity_hate |
+|---------|---------|--------|--------------|---------|--------|--------|---------------|
+| ROI AUC | 0.95895 | 0.9705 | 0.9860       | 0.9865  | 0.9557 | 0.9777 | 0.9533        |
+
+These high ROC AUC scores indicate that the model effectively distinguishes between toxic and non-toxic comments across different categories.
+
+### Estimated Memory Usage in RAM
+
+The approximate memory usage of the model when loaded is estimated by counting the number of parameters and their data type.
+
+|                        |           |
+|------------------------|-----------|
+| Total Parameters       | 9,305,748 |
+| Estimated Memory Usage | 35.50 MB  |
 
 ## Installation
 
