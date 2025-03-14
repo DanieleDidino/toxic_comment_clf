@@ -116,13 +116,16 @@ The search results for the selected CNN+GRU model, as well as for other models t
 - **Dropout Rate**: Prevents overfitting by randomly dropping units during training (typical range: 0.2-0.5).
 
 **Selected Hyperparameters**:
-- **Embedding Dimension**: 50
-- **Number of Filters**: 128
-- **Kernel Size**: 3
-- **GRU Hidden Size**: 64
-- **Learning Rate**: 0.0008
-- **Batch Size**: 16
-- **Dropout Rate**: 0.3
+
+| Hyperparameter      | Value  |
+|---------------------|--------|
+| Embedding Dimension | 50     |
+| Number of Filters   | 128    |
+| Kernel Size         | 3      |
+| GRU Hidden Size     | 64     |
+| Learning Rate       | 0.0008 |
+| Batch Size          |  16    |
+| Dropout Rate        | 0.3    |
 
 ### Performance
 
@@ -146,10 +149,9 @@ These high ROC AUC scores indicate that the model effectively distinguishes betw
 
 The approximate memory usage of the model when loaded is estimated by counting the number of parameters and their data type.
 
-|                        |           |
-|------------------------|-----------|
-| Total Parameters       | 9,305,748 |
-| Estimated Memory Usage | 35.50 MB  |
+| Total Parameters | Estimated Memory Usage |
+|------------------|------------------------|
+| 9,305,748        | 35.50 MB               |
 
 ## Installation
 
