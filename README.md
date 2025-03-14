@@ -2,45 +2,50 @@
 
 <p align="center">An Application for Detecting Toxic Language</p>
 
+#### The Streamlit App is available here:
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://h79wmnxbmimkvqem9wnwp2.streamlit.app/)
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#data">Data</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#model-architecture">Model Architecture</a>
+    </li>
+    <li>
+      <a href="#installation">Installation</a>
+    </li>
+  </ol>
+</details>
+
+## About the Project
+
+<p align="center">
+<img src="img/streamlit_screenshot.png", alt="drawing", width="800"/>
+</p>
+
 Thank you for your interest in this project!
 
-The goal of this project is to develop an application that detects toxic language.
-The objective was to create a lightweight model that performs well in classifying toxic content while requiring minimal computational resources.
-
-**Table of Contents**:
-
-- [Objective](#objective)
-    - [What is Multilabel Classification?](#what-is-multilabel-classification)
-    - [Key Concepts:](#key-concepts)
-- [Model Architecture](#model-architecture)
-    - [Architecture Overview](#architecture-overview)
-    - [Why CNN+GRU?](#why-cnngru)
-    - [Key Benefits](#key-benefits)
-    - [Workflow](#workflow)
-    - [Hyperparameters](#hyperparameters)
-- [Streamlit App (cloud)](#streamlit-app-cloud)
-- [Installation](#installation)
-    - [Python Version: 3.10.12](#python-version-31012)
-    - [1. Clone the Repository](#1-clone-the-repository)
-    - [2. Create a Virtual Environment](#2-create-a-virtual-environment)
-    - [3. Activate the Virtual Environment and Install Dependencies](#3-activate-the-virtual-environment-and-install-dependencies)
-    - [4. Run the Streamlit App Locally](#4-run-the-streamlit-app-locally)
-    - [5. Deactivate the Virtual Environment](#5-deactivate-the-virtual-environment)
-
-## Objective
-
-The goal of this project was to build an efficient, lightweight model to classify text into various toxic categories.
-The model performs multilabel classification, meaning it can assign multiple labels to each text based on its content.
+In this project, I aimed to build an efficient, lightweight model capable of accurately classifying toxic content while requiring minimal computational resources.
+The model performs multilabel classification, meaning it can assign multiple labels to a single text based on its content.
+It is deployed in a Streamlit app, as shown in the screenshot above.
 
 #### What is Multilabel Classification?
 
 Multilabel classification is a task where each input instance (in this case, a text comment) can be assigned multiple labels simultaneously.
 This is in contrast to traditional single-label classification, where each instance belongs to just one class.
 
-#### Key Concepts:
-
-- **Multiple Labels**: Each comment can have more than one label. For instance, a toxic comment may be tagged with both "threat" and "identity hate."
+Key Concepts of multilabel classification:
+- **Multiple Labels**: Each comment can have more than one label. For instance, a toxic comment may be tagged with both "threat" and "identity hate".
 - **Independent Labels**: The labels are not mutually exclusive, meaning a comment can belong to any combination of labels, including none at all.
+
+### Data
 
 The dataset used in this project is from the [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge) on Kaggle.
 It contains a large set of Wikipedia comments that have been manually labeled for various types of toxic behavior.
@@ -80,13 +85,12 @@ Given the relatively small dataset of 100K samples and short text, a CNN+GRU hyb
 - **Efficiency**: Pooling in the CNN reduces the sequence length, enabling the GRU to process fewer time steps, speeding up training.
 - **Empirical Performance**: CNN+GRU architectures often outperform other combinations (e.g., GRU-CNN) in text classification tasks.
 
-#### Workflow
-- CNN Layer extracts local patterns from the text (n-grams).
-- The GRU Layer processes the output from the CNN to capture sequential dependencies and contextual information.
-- A Dropout Layer is applied to reduce overfitting by randomly dropping units during training.
-- The Final Fully Connected Layer makes the classification decision based on the information from the CNN, GRU, and Dropout layers.
+#### Weights & Biases
 
-#### Hyperparameters
+The hyperparameter search was conducted using **Weights & Biases**.
+The search results for the selected CNN+GRU model, as well as for other models that were not chosen, can be found [here](https://wandb.ai/daniele-didino/toxic_comment_clf).
+
+**Hyperparameters Search**
 - **Embedding Dimension**: Size of the word embedding vectors (typical range: 50-300).
 - **Number of Filters**: Number of filters in the CNN (typical range: 64-256).
 - **Kernel Size**: Size of the convolutional kernel, capturing different n-gram patterns (typical range: 3-7).
@@ -94,9 +98,6 @@ Given the relatively small dataset of 100K samples and short text, a CNN+GRU hyb
 - **Learning Rate**: Controls the step size during training (typical range: 0.0001-0.01).
 - **Batch Size**: Number of samples per batch during training (typical range: 16-128).
 - **Dropout Rate**: Prevents overfitting by randomly dropping units during training (typical range: 0.2-0.5).
-
-The hyperparameter search was conducted using Weights & Biases.
-The search results for the selected CNN+GRU model, as well as for other models that were not chosen, can be found [here](https://wandb.ai/daniele-didino/toxic_comment_clf).
 
 **Selected Hyperparameters**:
 - **Embedding Dimension**: 50
@@ -106,12 +107,6 @@ The search results for the selected CNN+GRU model, as well as for other models t
 - **Learning Rate**: 0.0008
 - **Batch Size**: 16
 - **Dropout Rate**: 0.3
-
-## Streamlit App (cloud)
-
-The Streamlit App is available here:
-
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://h79wmnxbmimkvqem9wnwp2.streamlit.app/)
 
 ## Installation
 
